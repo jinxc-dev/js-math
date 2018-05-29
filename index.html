@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>griffintucker.id.au</title>
+		<style>
+			#disp {
+				margin-top: 100px;
+				/* display: none; */
+			}
+
+			* {
+				font-family: courier, monospace;
+			}
+			#result {
+				font-size: 20px;
+				padding-top: 20px;
+			}
+
+			.item-title {
+				font-size: 24px;
+				font-weight: bolder;
+			}
+		</style>
+		<link rel="stylesheet" type='text/css' href="bootstrap.min.css">
+		<script src="jquery.min.js"></script>
+    </head>
+	<body>
+		<div class="container">
+			<div class="row item-title" id="disp"></div>
+			<div class="row item-title" id="numLength"></div>
+			<div class="row item-title" id="zeroCount"></div>
+			<div class="row item-title" id="oneCount"></div>
+			<div class="row" id="result" style="word-wrap: break-word"></div>
+			
+		</div>
+	</body>
+	
+	<script>
+		/*
+		griffintucker.id.au binary thought bubble v2.2
+		Copyright (C) 2018 griffin tucker
+
+		This program is free software; you can redistribute it and/or
+		modify it under the terms of the GNU General Public License
+		as published by the Free Software Foundation; only version 2
+		of the License, not any later version.
+
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+		GNU General Public License for more details.
+
+		You should have received a copy of the GNU General Public License
+		along with this program; if not, write to the Free Software
+		Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+		See griffintucker.id.au/license.txt for further information.
+
+		*/
+		
+		
+		$(document).ready(function(){
+			var mid_value = 500;	//. middile value
+			var max_value = 1000;	//. max value
+			var upper_val = 750; 	//. upper val
+			var lower_val = 250; 	//. lower val
+
+			var l_val;
+
+			var g_result = "";
+
+			var g_cnt = 1000;
+
+			var intval = 100;
+
+			
+			setInterval(display, intval);
+			function display() {
+				var val = generateRand();
+				if (val < upper_val && val > lower_val) {
+					g_result += "_";
+					setData('');
+				} else {
+					lock(val);
+				}
+
+				$('#disp').text("Number : " + val);
+				$('#numLength').text("Length : " + g_result.length);
+				$('#zeroCount').text("Zero Count : " + g_result.match(new RegExp("1", "g")).length);
+				$('#oneCount').text("One Count : " + g_result.match(new RegExp("0", "g")).length);
+			}
+			function generateRand() {
+				return  Math.floor(Math.random() * max_value);
+			}
+			
+			//. lock process
+			function lock(num) {
+				var w_v = (num < mid_value) ? 0 : 1;
+				tmpSetData(w_v);
+				var tmp_n = generateRand();
+				l_val = max_value - tmp_n;
+				tmpSetData(compare(tmp_n));
+
+				//. lock process
+				var last_val = 0;
+				do {
+					last_val = compare(generateRand());
+					tmpSetData(last_val);
+					l_val -= 10;
+				}while(l_val > 0)
+
+				//. set newlock
+				setData(last_val);
+				do {
+					
+					setData(compare(generateRand()));
+					l_val ++;
+				}while(l_val < 0)
+			}
+
+			function setData(w_n) {
+				g_result = g_result + w_n;
+				if (g_result.length > g_cnt) {
+					g_result = g_result.substr(1);
+				}
+				$('#result').text(g_result);
+			}
+
+			function compare(num) {
+				return (num < mid_value) ? "0" : "1";
+			}
+			function tmpSetData(val) {
+				$('#result').text(g_result + val);
+			}
+		});
+		//. new 
+
+	</script>
+</html>
